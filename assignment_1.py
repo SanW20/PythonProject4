@@ -1,21 +1,22 @@
 def clean_and_classify(messages):
-    grants_words = ["grant","funding","deadline","scholarship"]
-    reportr_words = ["report","file","send again","document"]
-    generalq_words = ["how","what","can you","where","why"]
+    grant_keywords = ["grant","funding","deadline","scholarship"]
+    report_keywords = ["report","file","send again","document"]
+    general_keywords = ["how","what","can you","where","why"]
     cleaned = []
 
-    for i in messages:
-        user_id = i.get("user_id").strip()
-        text = i.get("message").lower().strip()
-        channel = i.get("channel")
+    for msg in messages:
+        user_id = msg.get("user_id","").strip()
+        text = msg.get("message","").strip()
+        lower_text = text.lower()
+        channel = msg.get("channel")
         if not user_id or not text:
             continue
-        if any(j in text for j in grants_words):
+        if any(word in lower_text for word in grant_keywords):
             category = "grant_search"
-        elif any(j in text for j in reportr_words):
+        elif any(word in lower_text for word in report_keywords):
             category = "report_request"
-        elif any(j in text for j in generalq_words):
-            category = "general_questions"
+        elif any(word in lower_text for word in general_keywords):
+            category = "general_question"
         else:
             category = "unknown"
         cleaned.append({"user_id":user_id, "channel":channel, "message":text, "category":category})
